@@ -75,7 +75,6 @@
       else clientData[x.name] = JSON.parse(x.value)
     });
 
-    console.log(clientData);
     if (clientId !== null) clientData.id = clientId;
     postClient(clientData)
     return false;
