@@ -12,9 +12,6 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-    <!-- Custom styles for this template -->
-    <link href="form-validation.css" rel="stylesheet">
 </head>
 
 <body class="bg-light">
@@ -24,7 +21,47 @@
     </div>
 
     <script>
-        fetch('clients').then((response) => console.log(response))
+      fetch('client/getUserClients').then((response) => {
+        if (response.status !== 200) return;
+        response.json().then((data) => {
+          displayClients(data);
+        })
+      })
+
+      function displayClients(clientSet) {
+        clientSet.sort((a, b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0)).forEach((client) => {
+          const row = document.createElement('tr');
+          row.appendChild(createRowTH(client.id));
+          row.appendChild(createCell(client.firstName));
+          row.appendChild(createCell(client.lastName));
+          row.appendChild(createCell(client.username));
+          row.appendChild(createEditButton(client.id));
+          document.getElementById('clientTableBody').appendChild(row);
+        })
+      }
+
+      function createCell(cellData) {
+        const cell = document.createElement('td');
+        cell.appendChild(document.createTextNode(cellData));
+        return cell;
+      }
+
+      function createEditButton(id) {
+        const cell = document.createElement('td');
+        const anchor = document.createElement('a');
+        anchor.appendChild(document.createTextNode('Edit client'));
+        anchor.href = 'edit?id=' + id;
+        anchor.className = 'btn btn-primary';
+        cell.appendChild(anchor);
+        return cell;
+      }
+
+      function createRowTH(id) {
+        const cell = document.createElement('th');
+        cell.setAttribute('scope', 'row');
+        cell.appendChild(document.createTextNode(id));
+        return cell;
+      }
     </script>
 
     <div class="row">
@@ -39,35 +76,7 @@
                 <th></th>
             </tr>
             </thead>
-            <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>John</td>
-                <td>Smith</td>
-                <td>User1</td>
-                <td>
-                    <a href="edit" class="btn btn-primary">Edit client</a>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Bob</td>
-                <td>Smith</td>
-                <td>User2</td>
-                <td>
-                    <a href="edit" class="btn btn-primary">Edit client</a>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>Billy</td>
-                <td>Smith</td>
-                <td>User3</td>
-                <td>
-                    <a href="edit" class="btn btn-primary">Edit client</a>
-                </td>
-            </tr>
-            </tbody>
+            <tbody id="clientTableBody"></tbody>
         </table>
     </div>
 </div>
