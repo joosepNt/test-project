@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
+
+    <title>Client list</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body class="bg-light">
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>Clients</h2>
+    </div>
+
+    <script>
+      fetch('client/getUserClients').then((response) => {
+        if (response.status !== 200) return;
+        response.json().then((data) => {
+          displayClients(data);
+        })
+      })
+
+      function displayClients(clientSet) {
+        clientSet.sort((a, b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0)).forEach((client) => {
+          const row = document.createElement('tr');
+          row.appendChild(createRowTH(client.id));
+          row.appendChild(createCell(client.firstName));
+          row.appendChild(createCell(client.lastName));
+          row.appendChild(createCell(client.username));
+          row.appendChild(createEditButton(client.id));
+          document.getElementById('clientTableBody').appendChild(row);
+        })
+      }
+
+      function createCell(cellData) {
+        const cell = document.createElement('td');
+        cell.appendChild(document.createTextNode(cellData));
+        return cell;
+      }
+
+      function createEditButton(id) {
+        const cell = document.createElement('td');
+        const anchor = document.createElement('a');
+        anchor.appendChild(document.createTextNode('Edit client'));
+        anchor.href = 'edit?id=' + id;
+        anchor.className = 'btn btn-primary';
+        cell.appendChild(anchor);
+        return cell;
+      }
+
+      function createRowTH(id) {
+        const cell = document.createElement('th');
+        cell.setAttribute('scope', 'row');
+        cell.appendChild(document.createTextNode(id));
+        return cell;
+      }
+    </script>
+
+    <div class="row">
+        <a href="add" class="btn btn-primary">Add client</a>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">First</th>
+                <th scope="col">Last</th>
+                <th scope="col">Username</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="clientTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">&copy; 2018 Company Name</p>
+</footer>
+</body>
+</html>
